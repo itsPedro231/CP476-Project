@@ -1,38 +1,43 @@
 <?php
-// Start the session
+/*
+This file handles the HTML login form and PHP web logic on the initial page that users land on. 
+It verifies form input against predefined login credentials for the mySQL DB.
+If the input matches, a mySQLi connection is opened and the user is directed to our homepage.
+Otherwise let the user know that they have inputted invalid login credentials. 
+*/
+
 session_start();
 
-// Define your MySQL database login credentials
+// MySQL database login credentials
 $host = 'localhost';
 $dbUser = 'root';
-$dbPassword = 'ENTER_YOUR_UNIQUE_DB_PASS_HERE';
+$dbPassword = 'lamia123';
 $dbName = 'user_system';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $inputUsername = $_POST['username'];
     $inputPassword = $_POST['password'];
 
-    // Check if username and password match the MySQL credentials
     if ($inputUsername === $dbUser && $inputPassword === $dbPassword) {
-        // Try to connect to MySQLi to verify credentials work
+        // Create mySQLi Connection
         $conn = new mysqli($host, $dbUser, $dbPassword, $dbName);
-
+        // If the connection fails, its a DB connection error
         if ($conn->connect_error) {
             die('Database connection failed: ' . $conn->connect_error);
         }
-
+        $conn->set_charset("utf8mb4");
         // Login success
         $_SESSION['loggedin'] = true;
-        header('Location: home.php'); // Redirect to the main page
+        header('Location: home.php');
         exit;
+    // Credentials don't match
     } else {
         $error = 'Invalid Login Credentials';
     }
 }
-?>
 
-<!-- HTML Login Form -->
+// HTML Login Form 
+?>
 <!DOCTYPE html>
 <html>
 <head>
